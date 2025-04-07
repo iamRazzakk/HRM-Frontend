@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { z } from "zod";
+import { useState } from "react";
 
 type Field =
   | {
@@ -46,6 +47,7 @@ export function FormInput<T>({
   wrapperClassName = "",
   fieldClassName = "",
 }: Props<T>) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -61,7 +63,9 @@ export function FormInput<T>({
   };
 
   const submitHandler: SubmitHandler<T> = (data) => {
+    setIsSubmitting(true);
     onSubmit(data);
+    setIsSubmitting(false);
   };
 
   return (
@@ -72,7 +76,7 @@ export function FormInput<T>({
         <h1 className={`${fieldClassName}`}>{title}</h1>
         <CardContent>
           <form
-            onSubmit={handleSubmit(submitHandler)}
+            onSubmit={handleSubmit(() => submitHandler())}
             className="grid grid-cols-1 md:grid-cols-2 gap-6 "
           >
             {fields.map((field) => (
@@ -128,9 +132,11 @@ export function FormInput<T>({
             <div className="md:col-span-2">
               <Button
                 type="submit"
-                className="w-full py-3 text-lg bg-gradient-to-r from-black to-gray-800 text-white hover:opacity-90 transition"
+                className="w-full py-5 text-lg bg-gradient-to-r from-black to-gray-800 text-white hover:opacity-90 transition cursor-pointer"
+                disabled={isSubmitting} // Disable the button while submitting
               >
-                Submit
+                {isSubmitting ? "Submitting..." : "Submit"}{" "}
+                {/* Change button text */}
               </Button>
             </div>
           </form>

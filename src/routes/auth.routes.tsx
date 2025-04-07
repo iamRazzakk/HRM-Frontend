@@ -2,7 +2,7 @@ import SignUpForm from "@/components/pages/Auth/Singup";
 
 export const AuthRoutes = [
   {
-    path: "login",
+    path: "register",
     element: <SignUpForm />,
   },
 ];
