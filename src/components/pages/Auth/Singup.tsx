@@ -1,6 +1,5 @@
-import { FormInput } from "@/From/FormInput";
-import React from "react";
 import { z } from "zod";
+import { FormInput } from "@/From/FormInput";
 
 const signupSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -9,8 +8,8 @@ const signupSchema = z.object({
   phone: z.string().min(10, "Phone number required"),
   role: z.string().min(1, "Role is required"),
   department: z.string().min(1, "Department is required"),
-  salary: z.string(),
-  profilePicture: z.any().optional(), // if you want to handle file later
+  salary: z.string().min(1, "Salary is required"),
+  profilePicture: z.any().optional(), // Optional file
 });
 
 type SignUpData = z.infer<typeof signupSchema>;
@@ -41,6 +40,24 @@ const SignUpForm = () => {
       type: "tel",
       placeholder: "Enter phone number",
     },
+    {
+      name: "Address",
+      label: "Address",
+      type: "text",
+      placeholder: "Enter Address",
+    },
+    {
+      name: "Date of Birth",
+      label: "Date of Birth",
+      type: "Date",
+      placeholder: "Enter Date",
+    },
+    {
+      name: "Joining Date",
+      label: "Joining Date",
+      type: "Date",
+      placeholder: "Enter Date",
+    },
     { name: "role", label: "Role", type: "select", options: ["Admin", "User"] },
     {
       name: "department",
@@ -59,7 +76,7 @@ const SignUpForm = () => {
 
   const handleSubmit = (data: SignUpData) => {
     console.log("Submitted:", data);
-    // formData.append("profilePicture", data.profilePicture[0]) // if handling file
+    // formData.append("profilePicture", data.profilePicture[0]) // Handle file later
   };
 
   return (
@@ -67,7 +84,9 @@ const SignUpForm = () => {
       schema={signupSchema}
       fields={fields}
       onSubmit={handleSubmit}
-      title="Welcome To HRM"
+      title="Add Employee"
+      wrapperClassName="flex justify-center items-center h-screen" // Center the form
+      fieldClassName="text-center font-bold text-4xl"
     />
   );
 };

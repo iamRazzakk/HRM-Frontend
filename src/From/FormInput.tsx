@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -11,14 +10,14 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { z } from "zod";
 
 type Field =
   | {
       name: string;
       label: string;
-      type: "text" | "email" | "number" | "tel" | "file";
+      type: "text" | "email" | "number" | "tel" | "file" | "select";
       placeholder?: string;
     }
   | {
@@ -34,6 +33,8 @@ type Props<T> = {
   onSubmit: (data: T) => void;
   defaultValues?: Partial<T>;
   title?: string;
+  wrapperClassName?: string; // 🔁 reusable styles
+  fieldClassName?: string; // class name for each field
 };
 
 export function FormInput<T>({
@@ -42,6 +43,8 @@ export function FormInput<T>({
   onSubmit,
   defaultValues = {},
   title = "Form Title",
+  wrapperClassName = "",
+  fieldClassName = "",
 }: Props<T>) {
   const {
     register,
@@ -62,70 +65,77 @@ export function FormInput<T>({
   };
 
   return (
-    <Card className="max-w-3xl mx-auto mt-10 p-6 shadow-2xl rounded-3xl border border-gray-200">
-      <CardHeader className="text-center">
-        <CardTitle className="text-4xl font-extrabold text-black">
-          {title}
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent>
-        <form
-          onSubmit={handleSubmit(submitHandler)}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          {fields.map((field) => (
-            <div key={field.name} className="flex flex-col gap-1">
-              <Label
-                htmlFor={field.name}
-                className="text-md text-gray-700 font-medium"
-              >
-                {field.label}
-              </Label>
-
-              {field.type === "select" ? (
-                <Select
-                  onValueChange={(value) => handleChange(field.name, value)}
+    <div className="flex justify-center items-center h-screen">
+      <Card
+        className={`max-w-3xl mx-auto p-6 shadow-2xl rounded-3xl border border-gray-200 ${wrapperClassName}`}
+      >
+        <h1 className={`${fieldClassName}`}>{title}</h1>
+        <CardContent>
+          <form
+            onSubmit={handleSubmit(submitHandler)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 "
+          >
+            {fields.map((field) => (
+              <div key={field.name} className={`flex flex-col gap-1`}>
+                <Label
+                  htmlFor={field.name}
+                  className="text-md text-gray-700 font-medium"
                 >
-                  <SelectTrigger className="rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-500">
-                    <SelectValue placeholder={`Select ${field.label}`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {field.options.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <Input
-                  type={field.type}
-                  id={field.name}
-                  placeholder={field.placeholder}
-                  {...register(field.name as any)}
-                  className="rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-500"
-                />
-              )}
+                  {field.label}
+                </Label>
 
-              {errors[field.name as keyof T] && (
-                <span className="text-sm text-red-500">
-                  {(errors[field.name as keyof T] as any)?.message}
-                </span>
-              )}
+                {field.type === "select" ? (
+                  <Select
+                    onValueChange={(value) => handleChange(field.name, value)}
+                    className="rounded-xl border-gray-300 focus:ring-2 focus:ring-black border "
+                  >
+                    <SelectTrigger className=" w-full">
+                      <SelectValue placeholder={`Select ${field.label}`} />
+                    </SelectTrigger>
+                    <SelectContent className="">
+                      {field?.options?.map((option) => (
+                        <SelectItem className="" key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : field.type === "file" ? (
+                  <Input
+                    type="file"
+                    id={field.name}
+                    {...register(field.name as any)}
+                    className="rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : (
+                  <Input
+                    type={field.type}
+                    id={field.name}
+                    placeholder={field.placeholder}
+                    {...register(field.name as any)}
+                    className="rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-500 p-5"
+                  />
+                )}
+
+                {errors[field.name as keyof T] && (
+                  <span className="text-sm text-red-500">
+                    {(errors[field.name as keyof T] as any)?.message}
+                  </span>
+                )}
+              </div>
+            ))}
+
+            <div className="md:col-span-2">
+              <Button
+                type="submit"
+                className="w-full py-3 text-lg bg-gradient-to-r from-black to-gray-800 text-white hover:opacity-90 transition"
+              >
+                Submit
+              </Button>
             </div>
-          ))}
-
-          <div className="md:col-span-2">
-            <Button
-              type="submit"
-              className="w-full py-3 text-lg bg-gradient-to-r bg-black text-white"
-            >
-              Submit
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
