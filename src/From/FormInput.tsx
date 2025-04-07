@@ -65,6 +65,7 @@ export function FormInput<T>({
   const submitHandler: SubmitHandler<T> = (data) => {
     setIsSubmitting(true);
     onSubmit(data);
+    console.log(data);
     setIsSubmitting(false);
   };
 
@@ -76,7 +77,7 @@ export function FormInput<T>({
         <h1 className={`${fieldClassName}`}>{title}</h1>
         <CardContent>
           <form
-            onSubmit={handleSubmit(() => submitHandler())}
+            onSubmit={handleSubmit}
             className="grid grid-cols-1 md:grid-cols-2 gap-6 "
           >
             {fields.map((field) => (
