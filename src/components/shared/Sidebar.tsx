@@ -48,7 +48,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   );
 };
 
-const SidebarItem = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
+const SidebarItem = ({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) => (
   <button className="flex items-center space-x-3 text-gray-700 hover:text-black transition-colors w-full">
     <span>{icon}</span>
     <span>{label}</span>

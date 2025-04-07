@@ -1,12 +1,12 @@
-import Home from "./components/Home/Home"
-
+import { RouterProvider } from "react-router-dom";
+import { useRouter } from "./hooks/useRoutes";
 function App() {
-
+  const router = useRouter();
   return (
     <>
-<Home />
+      <RouterProvider router={router} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
